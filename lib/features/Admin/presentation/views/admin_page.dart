@@ -1,5 +1,8 @@
+import 'package:auto_swift/core/components/custom_button.dart';
 import 'package:auto_swift/core/components/custom_container.dart';
 import 'package:auto_swift/core/components/custom_text_field.dart';
+import 'package:auto_swift/features/Admin/presentation/widgets/custom_dropdown.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +19,8 @@ class _AdminPageState extends State<AdminPage> {
   TextEditingController Seat_Number = TextEditingController();
   TextEditingController model = TextEditingController();
   TextEditingController price = TextEditingController();
-
+  List<String> Cars_Brand = ["Bmw", "Audi", "Porshe"];
+  String? selected_brand;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,6 +87,40 @@ class _AdminPageState extends State<AdminPage> {
               controller: Seat_Number,
               hint: "Car Number",
               type: TextInputType.number,
+            ),
+            SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: CustomDropdown(
+                onChanged: (data) {
+                  setState(() {
+                    selected_brand = data;
+                  });
+                },
+                value: ValueNotifier<String?>(selected_brand),
+                hint: "Car Brand",
+                valid: "Please Select at least 1 item",
+                items: Cars_Brand.map(
+                  (brand) => DropdownItem(value: brand, child: Text(brand)),
+                ).toList(),
+              ),
+            ),
+            SizedBox(height: 16),
+            CustomButton(
+              width: MediaQuery.of(context).size.width,
+              height: 40,
+              color: Colors.black,
+              radius: 20,
+              onTap: () {},
+              child: Center(
+                child: Text(
+                  "Add Car",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ],
         ),

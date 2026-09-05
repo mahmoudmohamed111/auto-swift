@@ -1,4 +1,5 @@
 import 'package:auto_swift/core/components/custom_text.dart';
+import 'package:auto_swift/features/home/presentation/views/car_detail_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -193,9 +194,23 @@ class _HomePageState extends State<HomePage> {
                                     fontSize: 17,
                                     fontWeight: FontWeight.w500,
                                   ),
-                                  const Icon(
-                                    Icons.arrow_circle_right_rounded,
-                                    color: Colors.red,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return CarDetailView(
+                                              cardetail: car,
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                    child: const Icon(
+                                      size: 25,
+                                      Icons.arrow_circle_right_rounded,
+                                      color: Colors.red,
+                                    ),
                                   ),
                                 ],
                               ),

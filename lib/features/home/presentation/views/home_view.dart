@@ -1,4 +1,5 @@
 import 'package:auto_swift/core/components/custom_text.dart';
+import 'package:auto_swift/features/Auth/presentation/views/profile_view.dart';
 import 'package:auto_swift/features/home/presentation/views/car_detail_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,10 +34,21 @@ class _HomePageState extends State<HomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const CircleAvatar(
-                  radius: 22,
-                  backgroundImage: NetworkImage(
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYC2OLdKr-jgP9ujR6RxbWaUlbXNHJbS8RrSc0SjvNrQ&s=10",
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return ProfilePage();
+                        },
+                      ),
+                    );
+                  },
+                  child: const CircleAvatar(
+                    radius: 22,
+                    backgroundImage: NetworkImage(
+                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYC2OLdKr-jgP9ujR6RxbWaUlbXNHJbS8RrSc0SjvNrQ&s=10",
+                    ),
                   ),
                 ),
                 Text(

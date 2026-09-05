@@ -2,6 +2,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class CustomDropdown extends StatelessWidget {
   CustomDropdown({
     super.key,

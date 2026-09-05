@@ -1,10 +1,14 @@
+import 'dart:io';
+import 'package:auto_swift/core/components/snack.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:auto_swift/core/components/custom_button.dart';
 import 'package:auto_swift/core/components/custom_container.dart';
 import 'package:auto_swift/core/components/custom_text_field.dart';
 import 'package:auto_swift/features/Admin/presentation/widgets/custom_dropdown.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class AdminPage extends StatefulWidget {
   const AdminPage({super.key});
@@ -14,13 +18,54 @@ class AdminPage extends StatefulWidget {
 }
 
 class _AdminPageState extends State<AdminPage> {
-  TextEditingController speed = TextEditingController();
-  TextEditingController Engine = TextEditingController();
-  TextEditingController Seat_Number = TextEditingController();
-  TextEditingController model = TextEditingController();
-  TextEditingController price = TextEditingController();
-  List<String> Cars_Brand = ["Bmw", "Audi", "Porshe"];
-  String? selected_brand;
+  final speed = TextEditingController();
+  final engine = TextEditingController();
+  final seatNumber = TextEditingController();
+  final model = TextEditingController();
+  final price = TextEditingController();
+
+  final List<String> carsBrand = ["Bmw", "Audi", "Porshe"];
+  String? selectedBrand;
+  File? imageFile;
+  bool isLoading = false;
+
+  final supabase = Supabase.instance.client;
+  Future<void> pickImage() async {
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picked != null) setState(() => imageFile = File(picked.path));
+  }
+
+  Future<void> addCar() async {
+    if (imageFile == null || selectedBrand == null) return;
+
+    setState(() => isLoading = true);
+    try {
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+      await supabase.storage.from('images').upload(fileName, imageFile!);
+      final imageUrl = supabase.storage.from('images').getPublicUrl(fileName);
+
+      await supabase.from('cars').insert({
+        'engine': engine.text,
+        'speed': speed.text,
+        'seat_number': seatNumber.text,
+        'model': model.text,
+        'price': double.tryParse(price.text) ?? 0,
+        'brand': selectedBrand,
+        'image_url': imageUrl,
+      });
+
+      if (mounted) {
+        Snack().success(context, "Car added successfully!");
+      }
+    } catch (e) {
+      if (mounted) {
+        Snack().error(context, "Error: $e");
+      }
+    } finally {
+      if (mounted) setState(() => isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,11 +73,13 @@ class _AdminPageState extends State<AdminPage> {
       appBar: AppBar(
         backgroundColor: Colors.grey.shade300,
         elevation: 0,
-        title: Text("Admin Page"),
+        title: const Text(
+          "Admin Page",
+          style: TextStyle(fontSize: 20, color: Colors.black),
+        ),
         centerTitle: true,
-        titleTextStyle: TextStyle(fontSize: 20, color: Colors.black),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
@@ -40,25 +87,30 @@ class _AdminPageState extends State<AdminPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomContainer(
-                  height: 40,
-                  width: 40,
-                  radius: 60,
+                  height: 50,
+                  width: 50,
+                  radius: 50,
                   color: Colors.red,
                 ),
-                Icon(CupertinoIcons.share_up),
+                GestureDetector(
+                  onTap: () {
+                    pickImage();
+                  },
+                  child: const Icon(CupertinoIcons.share_up),
+                ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
                   child: CustomTextField(
-                    controller: Engine,
+                    controller: engine,
                     hint: "Car Engine",
                     type: TextInputType.text,
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                   child: CustomTextField(
                     controller: speed,
@@ -66,60 +118,57 @@ class _AdminPageState extends State<AdminPage> {
                     type: TextInputType.text,
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                   child: CustomTextField(
-                    controller: Seat_Number,
+                    controller: seatNumber,
                     hint: "Car Number",
                     type: TextInputType.number,
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             CustomTextField(
               controller: model,
               hint: "Car Model",
               type: TextInputType.text,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             CustomTextField(
               controller: price,
               hint: "Car Price",
               type: TextInputType.number,
             ),
-            SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: CustomDropdown(
-                onChanged: (data) {
-                  setState(() {
-                    selected_brand = data;
-                  });
-                },
-                value: ValueNotifier<String?>(selected_brand),
-                hint: "Car Brand",
-                valid: "Please Select at least 1 item",
-                items: Cars_Brand.map(
-                  (brand) => DropdownItem(value: brand, child: Text(brand)),
-                ).toList(),
-              ),
+            const SizedBox(height: 16),
+            CustomDropdown(
+              onChanged: (data) => setState(() => selectedBrand = data),
+              value: ValueNotifier<String?>(selectedBrand),
+              hint: "Car Brand",
+              valid: "Please Select at least 1 item",
+              items: carsBrand
+                  .map(
+                    (brand) => DropdownItem(value: brand, child: Text(brand)),
+                  )
+                  .toList(),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             CustomButton(
               width: MediaQuery.of(context).size.width,
               height: 40,
               color: Colors.black,
               radius: 20,
-              onTap: () {},
+              onTap: isLoading ? null : addCar,
               child: Center(
-                child: Text(
-                  "Add Car",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                child: isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(
+                        "Add Car",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
               ),
             ),
           ],

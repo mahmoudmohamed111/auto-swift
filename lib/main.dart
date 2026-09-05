@@ -1,8 +1,14 @@
 import 'package:auto_swift/features/Admin/presentation/views/admin_page.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Supabase.initialize(
+    url: 'https://marpbzqwxtgslasycdvb.supabase.co',
+    publishableKey: "sb_publishable_mndCc5XwPD5Q9j5WJoWBZQ_spwupQHi",
+  );
   runApp(const Auto_swift_app());
 }
 

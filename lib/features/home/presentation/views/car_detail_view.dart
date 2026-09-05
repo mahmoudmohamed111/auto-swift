@@ -1,6 +1,7 @@
 import 'package:auto_swift/core/components/custom_text.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class CarDetailView extends StatelessWidget {
   CarDetailView({super.key, required this.cardetail});
   Map cardetail;

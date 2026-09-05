@@ -1,4 +1,4 @@
-import 'package:auto_swift/features/home/presentation/views/home_view.dart';
+import 'package:auto_swift/features/home/presentation/views/cars_view.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:auto_swift/core/components/custom_button.dart';
@@ -58,7 +58,7 @@ class _AuthPageState extends State<AuthPage> {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) {
-                return HomePage();
+                return CarsPage();
               },
             ),
           );

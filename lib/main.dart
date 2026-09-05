@@ -1,4 +1,5 @@
 import 'package:auto_swift/features/Auth/presentation/views/auth_view.dart';
+import 'package:auto_swift/features/home/presentation/views/cars_view.dart';
 import 'package:auto_swift/features/home/presentation/views/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -21,7 +22,7 @@ class Auto_swift_app extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(useMaterial3: false),
       debugShowCheckedModeBanner: false,
-      home: AuthGate(),
+      home: HomePage(),
     );
   }
 }
@@ -34,7 +35,7 @@ class AuthGate extends StatelessWidget {
     final session = Supabase.instance.client.auth.currentSession;
 
     if (session != null) {
-      return const HomePage();
+      return const CarsPage();
     }
 
     return StreamBuilder<AuthState>(
@@ -42,7 +43,7 @@ class AuthGate extends StatelessWidget {
       builder: (context, snapshot) {
         final currentSession = snapshot.data?.session ?? session;
         if (currentSession != null) {
-          return const HomePage();
+          return const CarsPage();
         }
         return const AuthPage();
       },

@@ -1,6 +1,4 @@
-import 'package:auto_swift/features/Admin/presentation/views/admin_page.dart';
 import 'package:auto_swift/features/Auth/presentation/views/auth_view.dart';
-import 'package:auto_swift/features/home/presentation/views/car_detail_view.dart';
 import 'package:auto_swift/features/home/presentation/views/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -23,7 +21,31 @@ class Auto_swift_app extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(useMaterial3: false),
       debugShowCheckedModeBanner: false,
-      home: AuthPage(),
+      home: AuthGate(),
+    );
+  }
+}
+
+class AuthGate extends StatelessWidget {
+  const AuthGate({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final session = Supabase.instance.client.auth.currentSession;
+
+    if (session != null) {
+      return const HomePage();
+    }
+
+    return StreamBuilder<AuthState>(
+      stream: Supabase.instance.client.auth.onAuthStateChange,
+      builder: (context, snapshot) {
+        final currentSession = snapshot.data?.session ?? session;
+        if (currentSession != null) {
+          return const HomePage();
+        }
+        return const AuthPage();
+      },
     );
   }
 }

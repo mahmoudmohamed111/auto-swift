@@ -55,7 +55,7 @@ class _AuthPageState extends State<AuthPage> {
 
         if (mounted) {
           Snack().success(context, "Logged in successfully!");
-          Navigator.of(context).push(
+          Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) {
                 return HomePage();
@@ -122,7 +122,6 @@ class _AuthPageState extends State<AuthPage> {
                 ),
                 const SizedBox(height: 32),
 
-                // Email Field
                 CustomTextField(
                   controller: emailController,
                   hint: "Email Address",

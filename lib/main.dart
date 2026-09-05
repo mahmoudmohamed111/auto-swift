@@ -1,4 +1,5 @@
 import 'package:auto_swift/features/Admin/presentation/views/admin_page.dart';
+import 'package:auto_swift/features/home/presentation/views/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -20,7 +21,7 @@ class Auto_swift_app extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(useMaterial3: false),
       debugShowCheckedModeBanner: false,
-      home: AdminPage(),
+      home: HomeView(),
     );
   }
 }

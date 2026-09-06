@@ -1,6 +1,4 @@
-import 'package:auto_swift/features/Admin/presentation/views/admin_page.dart';
 import 'package:auto_swift/features/Auth/presentation/views/auth_view.dart';
-import 'package:auto_swift/features/home/presentation/views/cars_view.dart';
 import 'package:auto_swift/features/home/presentation/views/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

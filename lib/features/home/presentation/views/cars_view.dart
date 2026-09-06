@@ -16,11 +16,13 @@ class CarsPage extends StatefulWidget {
 class _CarsPageState extends State<CarsPage> {
   String selectedBrand = "All";
   final List<String> brands = ["All", "Bmw", "Audi", "Porshe"];
-  final Stream<List<Map<String, dynamic>>> _carsStream = Supabase
+  final user = Supabase.instance.client.auth.currentUser;
+  late final Stream<List<Map<String, dynamic>>> _myCarsStream = Supabase
       .instance
       .client
       .from('cars')
-      .stream(primaryKey: ['id']);
+      .stream(primaryKey: ['id'])
+      .eq('user_id', user?.id ?? '');
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +125,7 @@ class _CarsPageState extends State<CarsPage> {
             const SizedBox(height: 16),
             Expanded(
               child: StreamBuilder<List<Map<String, dynamic>>>(
-                stream: _carsStream,
+                stream: _myCarsStream,
                 builder: (context, snapshot) {
                   final allCars = snapshot.data ?? [];
                   final filteredCars = selectedBrand == "All"

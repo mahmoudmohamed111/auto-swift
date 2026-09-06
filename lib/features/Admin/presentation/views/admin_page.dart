@@ -23,7 +23,7 @@ class _AdminPageState extends State<AdminPage> {
   final seatNumber = TextEditingController();
   final model = TextEditingController();
   final price = TextEditingController();
-
+  final user = Supabase.instance.client.auth.currentUser;
   final List<String> carsBrand = ["Bmw", "Audi", "Porshe"];
   String? selectedBrand;
   File? imageFile;
@@ -45,6 +45,7 @@ class _AdminPageState extends State<AdminPage> {
       final imageUrl = supabase.storage.from('images').getPublicUrl(fileName);
 
       await supabase.from('cars').insert({
+        'user_id': user?.id,
         'engine': engine.text,
         'speed': speed.text,
         'seat_number': seatNumber.text,
@@ -122,7 +123,7 @@ class _AdminPageState extends State<AdminPage> {
                 Expanded(
                   child: CustomTextField(
                     controller: seatNumber,
-                    hint: "Car Number",
+                    hint: "Seat_Number",
                     type: TextInputType.number,
                   ),
                 ),
